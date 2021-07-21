@@ -1,0 +1,21 @@
+sudo docker build -t mongodb
+
+sudo docker build -t goals-node
+
+sudo docker build -t goals-react
+
+sudo docker run --name mongodb --rm -d --network goals-net mongo
+
+sudo docker run -v data:/data/db --name mongodb --rm -d --network goals-net mongo
+
+sudo docker run --name mongodb -v data:/data/db --rm -d --network goals-net -e MONGO_INITDB_ROOT_USERNAME=mongoadmin -e MONGO_INITDB_ROOT_PASSWORD=secret mongo
+
+sudo docker run --name goals-backend --rm --add-host host.docker.internal:host-gateway -d --network goals-net -p 80:80 goals-node
+
+sudo docker run --name goals-backend --rm -d --network goals-net -p 80:80 goals-node
+
+sudo docker run --name goals-backend -v $(pwd):/app -v logs:/app/logs -v /app/node_modules --rm -d --network goals-net -p 80:80 goals-node
+
+sudo docker run --name goals-backend -v $(pwd):/app -v logs:/app/logs -v /app/node_modules -e MONGODB_USERNAME=mongoadmin -e MONGODB_PASSWORD=secret --rm -d --network goals-net -p 80:80 goals-node
+
+sudo docker run -v $(pwd)/src:/app/src --name goals-frontend  --rm -it -p 3000:3000 -it goals-react
